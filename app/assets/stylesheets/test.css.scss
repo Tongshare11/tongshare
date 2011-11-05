@@ -1,4 +1,22 @@
-#test {
-  font-size: 100% * 2;
+/* constants */
+$pageWidth: 1000px;
+$frameHeight: 310px;
+
+/* macro classes */
+.float-left { float: left; }
+.float-right { float: right; }
+
+#page {
+  width: $pageWidth;
+  margin: 0 auto;
 }
 
+.frame {
+  height: $frameHeight;
+  width: $pageWidth * 0.45;
+}
+
+.frame-slide {
+  width: $pageWidth * 0.05;
+  &:hover { cursor: pointer; }
+}
