@@ -1,0 +1,40 @@
+/* constants */
+$pageWidth: 1000px;
+$frameLimitHeight: 310px;
+$frameLimitWidth: $pageWidth * 0.8;
+$frameSlideWidth: $pageWidth * 0.05;
+$frameWidth: $frameLimitWidth * 0.5;
+$frameContainerWidth: $frameLimitWidth * 2;
+
+/* macro classes */
+.float-left { float: left; }
+.float-right { float: right; }
+.float-clear { clear: both; }
+
+#page {
+  width: $pageWidth;
+  margin: 0 auto;
+}
+
+.frame {
+  width: $frameWidth;
+  height: $frameLimitHeight;
+}
+
+.frame-slide {
+  width: $frameSlideWidth;
+  &:hover { cursor: pointer; }
+}
+
+#frame-limit {
+  width: $frameLimitWidth;
+  height: $frameLimitHeight;
+  margin-left: $frameSlideWidth;
+  margin-right: $frameSlideWidth;
+  overflow: hidden;
+}
+
+#frame-container {
+  width: $frameContainerWidth;
+  height: $frameLimitHeight;
+}
