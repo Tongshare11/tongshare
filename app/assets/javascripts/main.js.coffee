@@ -1,40 +1,85 @@
 $ ->
-  $('#header').prepend('<h1>Tongshare</h1>')
-  $('#footer').prepend('<h3>Bravura</h3>')
-
-  mapFrame = '
-    <div id="map-frame" class="frame float-left">
-      <p>Google maps for tsinghua</p>
-    </div>'
-
-  statusFrame = '
-    <div id="status-frame" class="frame float-left">
-      <ul>
-        <li>status 1</li>
-        <li>status 2</li>
-        <li>event 1</li>
-      </ul>
-    </div>'
-  
-  commentsFrame = '
-    <div id="comments-frame" class="frame float-left">
-      <ul>
-        <li>comment 1</li>
-        <li>comment 2</li>
-      </ul>
-    </div>'
+  mapFrame = '<div id="map-frame" class="frame float-left"></div>'
+  statusFrame = '<div id="status-frame" class="frame float-left"></div>'  
+  commentsFrame = '<div id="comments-frame" class="frame float-left"></div>'
 
   $('#frame-container').append(mapFrame)
   $('#frame-container').append(statusFrame)
   $('#frame-container').append(commentsFrame)
   
-  $('#frame-slide-left').click(
+  $('#slide-left').click(
     ->
-      $('#frame-container').animate({'margin-left': '-=400px'}, 'slow')
+      $('#frame-container').animate({'margin-left': '-=50%'}, 'slow')
   )
 
-  $('#frame-slide-right').click(
+  $('#slide-right').click(
     ->
-      $('#frame-container').animate({'margin-left': '+=400px'}, 'slow')
+      $('#frame-container').animate({'margin-left': '+=50%'}, 'slow')
   )
 
+  # Google maps for Tsinghua
+  tsinghua = new google.maps.LatLng(40.003, 116.327)
+  mapOpt = {zoom: 15, center: tsinghua, mapTypeId: google.maps.MapTypeId.ROADMAP}
+  map = new google.maps.Map(document.getElementById('map-frame'), mapOpt)
+
+  # get bounds of current map
+  google.maps.event.addListener(map, 'bounds_changed',
+    ->
+      northBound = map.getBounds().getNorthEast().lat()
+      eastBound = map.getBounds().getNorthEast().lng()
+      southBound = map.getBounds().getSouthWest().lat()
+      westBound = map.getBounds().getSouthWest().lng()
+
+
+      $('#status-frame').html('
+        <div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div>
+        <div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div><div class="status-item">
+          <a href="xx">username</a>
+          <p>mesage</p>
+          <span class="location">location</span>
+        </div>
+      ')
+  )
+
+
+  

@@ -1,40 +1,62 @@
-/* constants */
-$pageWidth: 1000px;
-$frameLimitHeight: 310px;
-$frameLimitWidth: $pageWidth * 0.8;
-$frameSlideWidth: $pageWidth * 0.05;
-$frameWidth: $frameLimitWidth * 0.5;
-$frameContainerWidth: $frameLimitWidth * 2;
+/* page inspect */
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(238,238,238,0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
 
 /* macro classes */
 .float-left { float: left; }
 .float-right { float: right; }
 .float-clear { clear: both; }
 
-#page {
-  width: $pageWidth;
-  margin: 0 auto;
+html, body, #page { width: 100%; height: 100%; margin: 0px; padding: 0px; }
+#header { 
+  width: 100%;
+  height: 10%; 
+  background: rgba(220,220,220,0.3);
 }
 
 .frame {
-  width: $frameWidth;
-  height: $frameLimitHeight;
+  width: 25%;
+  height: 100%;
 }
 
-.frame-slide {
-  width: $frameSlideWidth;
+.slide {
+  width: 5%;
+  height: 100%;
   &:hover { cursor: pointer; }
 }
 
 #frame-limit {
-  width: $frameLimitWidth;
-  height: $frameLimitHeight;
-  margin-left: $frameSlideWidth;
-  margin-right: $frameSlideWidth;
+  width: 100%; 
+  height: 90%;
   overflow: hidden;
 }
 
 #frame-container {
-  width: $frameContainerWidth;
-  height: $frameLimitHeight;
+  width: 200%;
+  height: 100%;
+}
+
+/* status */
+#status-frame {
+  overflow-y: scroll;
+}
+
+.status-item {
+  padding: 10px 30px;
+  border-bottom: 1px solid #ddd;
+  &:hover { cursor: pointer; background-color: #eee; }
+  .location { font-size: 8pt; color: #999; }
 }
