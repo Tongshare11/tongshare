@@ -1,6 +1,6 @@
 $ ->
   mapFrame = '<div id="map-frame" class="frame float-left"></div>'
-  statusFrame = '<div id="status-frame" class="frame float-left"></div>'  
+  statusFrame = '<div id="status-frame" class="frame float-left"></div>'
   commentsFrame = '<div id="comments-frame" class="frame float-left"></div>'
 
   $('#frame-container').append(mapFrame)
@@ -81,5 +81,5 @@ $ ->
       ')
   )
 
+# vim: set ts=2 sw=2 et:
 
-  
