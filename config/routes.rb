@@ -1,4 +1,6 @@
 Tongshare::Application.routes.draw do
+  resources :points
+
   resources :comments, :defaults => {:format => 'json'}
 
   resources :users, :defaults => {:format => 'json'}
