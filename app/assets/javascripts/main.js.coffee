@@ -1,6 +1,10 @@
 $ ->
   mapFrame = '<div id="map-frame" class="frame float-left"></div>'
+<<<<<<< HEAD
   statusFrame = '<div id="status-frame" class="frame float-left"><div id="status-list"></div></div>'
+=======
+  statusFrame = '<div id="status-frame" class="frame float-left"></div>'
+>>>>>>> f92f74ece5a889ac7852d8f8950b714c9c6c0c62
   commentsFrame = '<div id="comments-frame" class="frame float-left"></div>'
 
   newPost = """
@@ -58,3 +62,6 @@ $ ->
                <span class="location">#{event.location}</span>
              </div>"""
     , 500
+
+# vim: set ts=2 sw=2 et:
+
