@@ -1,10 +1,6 @@
 $ ->
   mapFrame = '<div id="map-frame" class="frame float-left"></div>'
-<<<<<<< HEAD
   statusFrame = '<div id="status-frame" class="frame float-left"><div id="status-list"></div></div>'
-=======
-  statusFrame = '<div id="status-frame" class="frame float-left"></div>'
->>>>>>> f92f74ece5a889ac7852d8f8950b714c9c6c0c62
   commentsFrame = '<div id="comments-frame" class="frame float-left"></div>'
 
   newPost = """
@@ -14,13 +10,15 @@ $ ->
         <div id="newpost-type-status" class="newpost-type">Status</div>
       </div>
       <textarea id="newpost-content"></textarea>
-      <div id="newpost-location-second" class="newpost-location">
-        <input type="text" id="newpost-location-second-text" class="newpost-location-text float-left" />
+      <div id="newpost-extend-bottom">
+        <div id="newpost-location-first" class="newpost-location float-left">
+          <input type="text" id="newpost-location-first-text" class="newpost-location-text" />
+        </div>
+        <div id="newpost-location-second" class="newpost-location float-left">
+          <input type="text" id="newpost-location-second-text" class="newpost-location-text" />
+        </div>
+        <input type="button" id="newpost-submit" class="float-right" value="Submit" />
       </div>
-      <div id="newpost-location-first" class="newpost-location">
-        <input type="text" id="newpost-location-first-text" class="newpost-location-text float-left" />
-      </div>
-      <input type="button" id="newpost-submit" class="float-right" value="Submit" />
       <div class="float-clear"></div>
     </div>"""
       
@@ -63,5 +61,24 @@ $ ->
              </div>"""
     , 500
 
-# vim: set ts=2 sw=2 et:
+  # Newpost
+  $('#newpost-extend-bottom').hide()
+  $('#newpost-content').click ->
+    $('#newpost-extend-bottom').fadeIn('fast')
+  $('#newpost-submit').click ->
+    content = $('#newpost-content').val()
+    # TODO
+    lat = map.getCenter().lat()
+    lng = map.getCenter().lng()
+    locationFirst = $('#newpost-location-first-text').val()
+    locationSecond = $('#newpost-location-second-text').val()
+    $.ajax
+      type: 'POST'
+      url: '/events'
+      data: JSON.stringify({content: content, latitude: lat, longitude: lng, first: locationFirst, second: locationSecond})
+      contentType: 'application/json'
+      success: (response) ->
+        alert(response)
+    
+    
 
