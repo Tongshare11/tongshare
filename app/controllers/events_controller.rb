@@ -1,8 +1,32 @@
 class EventsController < ApplicationController
+	require "pp"
   # GET /events
   # GET /events.json
+  # GET /events?lat=1.0&lng=1.0&r=1.0 
   def index
-    @events = Event.all
+    if (params[:lat].blank? || params[:lng].blank? || params[:r].blank?)	  
+      @events = Event.all
+    else
+			# get all the events in a square area from DB
+			lat = params[:lat].to_f
+			lng = params[:lng].to_f
+			r = params[:r].to_f
+			eventsList = Event.where(:latitude => (lat - r)..(lat + r), :longitude => (lng - r)..(lng + r))
+			# get all the events in a circle
+			@events = []
+		 	eventsList.each do |event|
+			  dist = (event.latitude - lat) * (event.latitude - lat) + (event.longitude - lng) * (event.longitude - lng)
+				if (dist <= r * r)
+					@events << event
+				end	
+			end
+			# sort the list by distance from the center
+			@events.sort! do |x, y|
+				xDist = (x.latitude - lat) * (x.latitude - lat) + (x.longitude - lng) * (x.longitude - lng)
+				yDist = (y.latitude - lat) * (y.latitude - lat) + (y.longitude - lng) * (y.longitude - lng) 
+				xDist <=> yDist
+			end	
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -16,8 +40,8 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
 
     respond_to do |format|
-      #format.html # show.html.erb
-      format.all { render json: @event }
+      format.html # show.html.erb
+      format.json { render json: @event }
     end
   end
 

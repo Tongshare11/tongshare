@@ -1,4 +1,8 @@
 Tongshare::Application.routes.draw do
+  resources :comments, :defaults => {:format => 'json'}
+
+  resources :users, :defaults => {:format => 'json'}
+
   resources :events, :defaults => {:format => 'json'}
   # The priority is based upon order of creation:
   # first created -> highest priority.
