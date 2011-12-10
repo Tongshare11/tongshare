@@ -5,17 +5,21 @@ $ ->
 
   newPost = """
     <div id="newpost">
+      <h2>New post</h2>
       <div id="newpost-type" class="float-left">
         <div id="newpost-type-event" class="newpost-type">Event</div>
         <div id="newpost-type-status" class="newpost-type">Status</div>
       </div>
       <textarea id="newpost-content"></textarea>
       <div id="newpost-extend-bottom">
+        <h3 class="float-left">Location</h3>
         <div id="newpost-location-first" class="newpost-location float-left">
           <input type="text" id="newpost-location-first-text" class="newpost-location-text" />
+          <div id="newpost-location-first-list"></div>
         </div>
         <div id="newpost-location-second" class="newpost-location float-left">
           <input type="text" id="newpost-location-second-text" class="newpost-location-text" />
+          <div id="newpost-location-second-list"></div>
         </div>
         <input type="button" id="newpost-submit" class="float-right" value="Submit" />
       </div>
@@ -48,6 +52,7 @@ $ ->
     southBound = map.getBounds().getSouthWest().lat()
     westBound = map.getBounds().getSouthWest().lng()
 
+    # update the status list
     clearTimeout(t)
     t = setTimeout ->
       $.get '/events', (data) ->
@@ -63,8 +68,17 @@ $ ->
 
   # Newpost
   $('#newpost-extend-bottom').hide()
-  $('#newpost-content').click ->
+  $('#newpost').click ->
     $('#newpost-extend-bottom').fadeIn('fast')
+  $('#newpost-location-first-text').focusin ->
+    # TODO get locs
+    locs = """
+      <div class="newpost-location-listitem">Tsinghua</div>
+      <div class="newpost-location-listitem">University</div>"""
+    $('#newpost-location-first-list').html(locs)
+  $('#newpost-location-first-text').blur ->
+    $('#newpost-location-first-list').empty()
+
   $('#newpost-submit').click ->
     content = $('#newpost-content').val()
     # TODO
