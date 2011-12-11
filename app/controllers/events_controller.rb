@@ -64,15 +64,32 @@ class EventsController < ApplicationController
   # POST /events
   # POST /events.json
   def create
+		  
     @event = Event.new(params[:event])
-
-    respond_to do |format|
-      if @event.save
-        format.html { redirect_to @event, notice: 'Event was successfully created.' }
-        format.json { render json: @event, status: :created, location: @event }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
+    #varify the json object 
+    if (!@event.content? or @event.content.nil? or 
+        !@event.title? or @event.title.nil? or
+        !@event.first? or @event.first.nil? or
+        @event.latitude.nil? or @event.longitude.nil?)
+       respond_to do |format|
+        format.json{ render json: {errorCode: 1, errorDesc: "Invalid JSON object recieved"}, status: :uprocessable_entity }
+       end
+    else  
+      respond_to do |format|
+        if @event.save
+          #update points count
+          point = Point.where("title = ?", @event.first).first
+          if !point.nil?
+            point.count = point.count + 1
+            point.save
+          end
+          #respond
+          format.html { redirect_to @event, notice: 'Event was successfully created.' }
+          format.json { render json: @event, status: :created, location: @event }
+        else
+          format.html { render action: "new" }
+          format.json { render json: @event.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
