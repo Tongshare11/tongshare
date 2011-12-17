@@ -50,7 +50,7 @@ $ ->
       for event in data
          $('#status-list').prepend """
            <div class="status-item">
-             <a href="xxx">#{event.title}</a>
+             <a href="xxx">Cysu</a>
              <p>#{event.content}</p>
              <span class="location">#{event.first + ' - ' + event.second}</span>
            </div>"""

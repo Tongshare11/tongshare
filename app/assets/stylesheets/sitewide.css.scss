@@ -25,22 +25,38 @@
 }
 
 html, body, #page { width: 100%; height: 100%; margin: 0px; padding: 0px; }
+
+/* header */
 #header { 
   width: 100%;
-  height: 10%; 
-  background: rgba(220,220,220,0.3);
+  height: 65px; 
+  background: url('header-bg.png') repeat-x;
   text-align: center;
 }
 
-.frame {
-  width: 25%;
-  height: 100%;
+#header-logo {
+  margin-left: 20px;
 }
 
 .slide {
-  width: 5%;
+  width: 50px;
+  height: 65px;
+  opacity: 0.2;
+  &:hover { cursor: pointer; opacity: 1; }
+}
+
+#slide-left {
+  background: url('left-arrow2.png') no-repeat;
+}
+
+#slide-right {
+  background: url('right-arrow2.png') no-repeat;
+}
+
+/* frames */
+.frame {
+  width: 25%;
   height: 100%;
-  &:hover { cursor: pointer; }
 }
 
 #frame-limit {
@@ -62,7 +78,7 @@ html, body, #page { width: 100%; height: 100%; margin: 0px; padding: 0px; }
 .status-item {
   padding: 10px 30px;
   border-bottom: 1px solid #ddd;
-  &:hover { cursor: pointer; background-color: #eee; }
+  &:hover { cursor: pointer; background: #eee; }
   .location { font-size: 8pt; color: #999; }
 }
 
