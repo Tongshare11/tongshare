@@ -14,15 +14,15 @@ $ ->
       <div id="newpost-extend-bottom">
         <h3 class="float-left">Location</h3>
         <div id="newpost-location-first" class="newpost-location float-left">
-          <input type="text" id="newpost-location-first-text" class="newpost-location-text" />
+          <input type="text" id="newpost-location-first-text" class="round-input-text newpost-location-text">
           <div id="newpost-location-first-list"></div>
         </div>
         <div id="newpost-location-second" class="newpost-location float-left">
-          <input type="text" id="newpost-location-second-text" class="newpost-location-text" />
+          <input type="text" id="newpost-location-second-text" class="round-input-text newpost-location-text">
           <div id="newpost-location-second-list"></div>
         </div>
         <div id="newpost-custom-location" class="text-button float-left">No location?</div>
-        <input type="button" id="newpost-submit" class="float-right" value="Submit" />
+        <input type="button" id="newpost-submit" class="float-right" value="Submit">
       </div>
       <div class="float-clear"></div>
     </div>"""
@@ -34,28 +34,64 @@ $ ->
   $('#status-frame').prepend(newPost)
   
   $('#slide-left').click ->
-    $('#frame-container').animate({'margin-left': '-=50%'}, 'slow')
+    $('#frame-container').animate({'margin-left': '+=50%'}, 'slow')
 
   $('#slide-right').click ->
-    $('#frame-container').animate({'margin-left': '+=50%'}, 'slow')
+    $('#frame-container').animate({'margin-left': '-=50%'}, 'slow')
+
+  # User
+  visitor = """
+    E-mail <input type="text" id="email-text" class="round-input-text">
+    Password <input type="password" id="password-text" class="round-input-text">
+    <input type="button" value="Sign in" id="login">
+    <input type="button" value="Sign up" id="register">"""
+  $('#user-login').append(visitor)
+
 
   # Google maps for Tsinghua
   tsinghua = new google.maps.LatLng(40.003, 116.327)
   mapOpt = {zoom: 15, center: tsinghua, mapTypeId: google.maps.MapTypeId.ROADMAP}
   map = new google.maps.Map(document.getElementById('map-frame'), mapOpt)
 
+  # Show status' locations on maps
+  statusMarkers = []
+  showMarkers = ->
+    for marker in statusMarkers
+      marker.setMap(null)
+    statusMarkers = []
+    for event in statusList
+      lat = parseFloat(event.latitude)
+      lng = parseFloat(event.longitude)
+      marker = new google.maps.Marker
+        position: new google.maps.LatLng(lat, lng)
+        map: map
+        draggable: false
+      statusMarkers.push(marker)
+
+  # Update status list
+  statusList = []
   updateStatusList = ->
     $.get '/events', (data) ->
       $('#status-list').empty()
+      statusList = data
+      iter = 0
       for event in data
-         $('#status-list').prepend """
-           <div class="status-item">
-             <a href="xxx">Cysu</a>
-             <p>#{event.content}</p>
-             <span class="location">#{event.first + ' - ' + event.second}</span>
-           </div>"""
+        $('#status-list').prepend """
+          <div class="status-item" id="#{iter}">
+            <a href="xxx">Cysu</a>
+            <p>#{event.content}</p>
+            <span class="location">#{event.first + ' - ' + event.second}</span>
+          </div>"""
+        iter += 1
+      showMarkers()
+      # Emphasize the hover status
+      $('.status-item').hover ->
+        for marker in statusMarkers
+          marker.setAnimation(null)
+        i = parseInt($(this).attr('id'))
+        statusMarkers[i].setAnimation(google.maps.Animation.BOUNCE)
 
-  t = 0
+  updateDelay = 0
   google.maps.event.addListener map, 'bounds_changed', ->
     # get bounds of current map
     northBound = map.getBounds().getNorthEast().lat()
@@ -64,10 +100,12 @@ $ ->
     westBound = map.getBounds().getSouthWest().lng()
 
     # update the status list
-    clearTimeout(t)
-    t = setTimeout ->
+    clearTimeout(updateDelay)
+    updateDelay = setTimeout ->
       updateStatusList()
     , 500
+
+
 
   # Newpost
   newpostMarker = new google.maps.Marker
@@ -78,9 +116,6 @@ $ ->
     $('#newpost-location-first-text').val('')
     $('#newpost-location-second-text').val('')
     newpostMarker.setTitle('Your Location')
-
-
-  
 
   # get location first list
   locs = []
@@ -124,7 +159,6 @@ $ ->
     newpostMarker.setPosition(map.getCenter())
     newpostMarker.setMap(map)
     newpostMarker.setTitle('Your Location')
-
 
   $('#newpost-submit').click ->
     content = $('#newpost-content').val()
