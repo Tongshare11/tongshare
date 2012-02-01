@@ -14,7 +14,7 @@ $ ->
       <div id="newpost-extend-bottom">
         <h3 class="float-left">Location</h3>
         <div id="newpost-location-first" class="newpost-location float-left">
-          <input type="text" id="newpost-location-first-text" class="round-input-text newpost-location-text">
+          <input type="text" id="newpost-location-first-text" class="round-input-text newpost-location-text" autocomplete="off">
           <div id="newpost-location-first-list"></div>
         </div>
         <div id="newpost-location-second" class="newpost-location float-left">
@@ -106,8 +106,9 @@ $ ->
     , 500
 
 
-
-  # Newpost
+  # ###########################
+  # Newpost Module
+  # ###########################
   newpostMarker = new google.maps.Marker
     position: new google.maps.LatLng(0, 0)
     map: null
@@ -117,10 +118,69 @@ $ ->
     $('#newpost-location-second-text').val('')
     newpostMarker.setTitle('Your Location')
 
+  calcRel = (key, loc) ->
+    if key == loc.title
+      return 1
+    if loc.title.indexOf(key) != -1
+      return 0.99
+    ret = 0
+    for i in [0..key.length-1]
+      if loc.title.indexOf(key.charAt(i)) != -1
+        ret += 1
+    return ret * 1.0 / key.length
+
+  # Function to get suggested locations by a given key string.
+  getSugLocs = (locs, key) ->
+    r = []
+    for loc in locs
+      r.push({loc:loc, rel:calcRel(key, loc)})
+    comp = (a, b) ->
+      if a.rel > b.rel
+        return -1
+      else if a.rel == b.rel
+        return 0
+      else if a.rel < b.rel
+        return 1
+    r.sort(comp)
+    ret = []
+    for i in [0..Math.min(4, r.length-1)]
+      ret.push(r[i].loc)
+    return ret
+
+  # Funtion to select a suggested location
+  selectSugLoc = (i) ->
+    return if i < 0
+    loc = cntSugLocs[i]
+    $('#newpost-location-first-text').val(loc.title)
+    latlng = new google.maps.LatLng(loc.latitude, loc.longitude)
+    newpostMarker.setPosition(latlng)
+    newpostMarker.setMap(map)
+    newpostMarker.setTitle(loc.title)
+    $('#newpost-location-first-list').fadeOut()
+    clearInterval(updateSugLocsInterval)
+    $('#newpost-location-second-text').focus()
+
+  # Funtion to update the suggested location list
+  prevKey = null
+  cntSugLocs = null
+  updateSugLocs = ->
+    key = $('#newpost-location-first-text').val()
+    if prevKey == null or prevKey != key
+      prevKey = key
+      cntSugLocs = getSugLocs(totLocs, key)
+      code = ''
+      for i in [0..cntSugLocs.length-1]
+        code += """<div class="newpost-location-listitem" id="#{i}">#{cntSugLocs[i].title}</div>"""
+    $('#newpost-location-first-list').html(code)
+    $('#newpost-location-first-list').fadeIn('fast')
+    $('.newpost-location-listitem').click ->
+      i = parseInt $(this).attr('id')
+      selectSugLoc(i)
+      
   # get location first list
-  locs = []
+  totLocs = []
   $.get '/points.json', (data) ->
-    locs = data
+    totLocs = data
 
   $('#newpost-extend-bottom').hide()
   $('#newpost-location-first-list').hide()
@@ -129,28 +189,34 @@ $ ->
   $('#newpost').click ->
     $('#newpost-extend-bottom').fadeIn('fast')
 
+  updateSugLocsInterval = null
   $('#newpost-location-first-text').focusin ->
-    # TODO get locs
-    code = ''
-    iter = 0
-    for loc in locs
-      code += """<div class="newpost-location-listitem" id="#{iter}">#{loc.title}</div>"""
-      iter += 1
-    $('#newpost-location-first-list').html(code)
-    $('#newpost-location-first-list').fadeIn('fast')
-    $('.newpost-location-listitem').click ->
-      newpostLocTitle = $(this).html()
-      $('#newpost-location-first-text').val(newpostLocTitle)
-      i = parseInt $(this).attr("id")
-      newpostLat = parseFloat(locs[i].latitude)
-      newpostLng = parseFloat(locs[i].longitude)
-      latlng = new google.maps.LatLng(newpostLat, newpostLng)
-      newpostMarker.setPosition(latlng)
-      newpostMarker.setMap(map)
-      newpostMarker.setTitle(newpostLocTitle)
+    if (updateSugLocsInterval != null)
+      clearInterval(updateSugLocsInterval)
+    updateSugLocsInterval = setInterval(updateSugLocs, 1000)
 
   $('#newpost-location-first-text').blur ->
     $('#newpost-location-first-list').fadeOut()
+    clearInterval(updateSugLocsInterval)
+
+  cntSelSugLoc = -1
+  $('#newpost-location-first-text').keyup (event) ->
+    if event.which == 13
+      selectSugLoc(cntSelSugLoc)
+      return
+    else if event.which == 38
+      cntSelSugLoc -= 1
+      if cntSelSugLoc < 0
+        cntSelSugLoc = cntSugLocs.length - 1
+    else if event.which == 40
+      cntSelSugLoc += 1
+      if cntSelSugLoc >= cntSugLocs.length
+        cntSelSugLoc = 0
+    else
+      cntSelSugLoc = -1
+    $('.newpost-location-listitem').css('background-color', '#fff')
+    if cntSelSugLoc != -1
+      $('#'+cntSelSugLoc).css('background-color', '#ddd')
 
   # custom location
   $('#newpost-custom-location').click ->
