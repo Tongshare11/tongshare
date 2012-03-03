@@ -1,0 +1,4 @@
+class AddCountColToAccessoryPoints < ActiveRecord::Migration
+  def change
+  end
+end

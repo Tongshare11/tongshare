@@ -1,0 +1,4 @@
+class AddCountColToPoints < ActiveRecord::Migration
+  def change
+  end
+end

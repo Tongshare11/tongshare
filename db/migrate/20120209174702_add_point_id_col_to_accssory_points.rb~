@@ -1,0 +1,4 @@
+class AddPointIdColToAccssoryPoints < ActiveRecord::Migration
+  def change
+  end
+end
