@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
 	require "pp"
 	before_filter :authenticate, :only => [:create, :destroy, :update ]	
+	
   # GET /events
   # GET /events.json
   # GET /events?lat=1.0&lng=1.0&r=1.0 
@@ -67,6 +68,8 @@ class EventsController < ApplicationController
   def create
 		  
     @event = Event.new(params[:event])
+		@event.user_id = @user.id
+
     #varify the json object 
     if (!@event.content? or @event.content.nil? or 
         !@event.title? or @event.title.nil? or
@@ -99,7 +102,7 @@ class EventsController < ApplicationController
   # PUT /events/1.json
   def update
     @event = Event.find(params[:id])
-
+		@event.user_id = @user.id
     respond_to do |format|
       if @event.update_attributes(params[:event])
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
@@ -126,7 +129,13 @@ class EventsController < ApplicationController
 private 
 	def authenticate
 		authenticate_or_request_with_http_basic do |username, password|
-			!(User.where("username = ? AND password = ?", username, password).empty?)
+			users = User.where("username = ? AND password = ?", username, password);
+			if (users.empty?)
+				return false
+			else
+				@user = users[0];
+				return true;
+			end
 		end
 	end
 end

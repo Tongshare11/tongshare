@@ -45,7 +45,7 @@ class CommentsController < ApplicationController
   # POST /comments.json
   def create
     @comment = Comment.new(params[:comment])
-
+		@comment.user_id = user.id
     respond_to do |format|
       if @comment.save
         format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
@@ -61,7 +61,7 @@ class CommentsController < ApplicationController
   # PUT /comments/1.json
   def update
     @comment = Comment.find(params[:id])
-
+		@comment.user_id = @user.id
     respond_to do |format|
       if @comment.update_attributes(params[:comment])
         format.html { redirect_to @comment, notice: 'Comment was successfully updated.' }
@@ -88,7 +88,13 @@ class CommentsController < ApplicationController
 private 
 	def authenticate
 		authenticate_or_request_with_http_basic do |username, password|
-			!(User.where("username = ? AND password = ?", username, password).empty?)
+			users = User.where("username = ? AND password = ?", username, password);
+			if (users.empty?)
+				return false
+			else
+				@user = users[0];
+				return true;
+			end
 		end
 	end
 end

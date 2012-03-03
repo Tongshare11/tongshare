@@ -1,7 +1,7 @@
 Tongshare::Application.routes.draw do
-  resources :accessory_points
+  resources :accessory_points, :defaults => {:format => 'json'}
 
-  resources :points
+  resources :points, :defaults => {:format => 'json'}
 
   resources :comments, :defaults => {:format => 'json'}
 

@@ -1,0 +1,23 @@
+<h1>Listing accessory_points</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @accessory_points.each do |accessory_point| %>
+  <tr>
+    <td><%= accessory_point.title %></td>
+    <td><%= link_to 'Show', accessory_point %></td>
+    <td><%= link_to 'Edit', edit_accessory_point_path(accessory_point) %></td>
+    <td><%= link_to 'Destroy', accessory_point, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Accessory point', new_accessory_point_path %>
