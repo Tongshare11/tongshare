@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_filter :authenticate, :only => [:destroy, :update]  
   # GET /users
   # GET /users.json
   def index
@@ -80,4 +81,11 @@ class UsersController < ApplicationController
       format.json { head :ok }
     end
   end
+
+private 
+	def authenticate
+		authenticate_or_request_with_http_basic do |username, password|
+			!(User.where("username = ? AND password = ?", username, password).empty?)
+		end
+	end
 end

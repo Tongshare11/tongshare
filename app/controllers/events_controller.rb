@@ -1,5 +1,6 @@
 class EventsController < ApplicationController
 	require "pp"
+	before_filter :authenticate, :only => [:create, :destroy, :update ]	
   # GET /events
   # GET /events.json
   # GET /events?lat=1.0&lng=1.0&r=1.0 
@@ -121,4 +122,11 @@ class EventsController < ApplicationController
       format.json { head :ok }
     end
   end
+
+private 
+	def authenticate
+		authenticate_or_request_with_http_basic do |username, password|
+			!(User.where("username = ? AND password = ?", username, password).empty?)
+		end
+	end
 end

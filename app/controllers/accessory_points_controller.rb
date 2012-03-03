@@ -1,4 +1,5 @@
 class AccessoryPointsController < ApplicationController
+	before_filter :authenticate, :only => [:create, :destroy, :update ]
   # GET /accessory_points
   # GET /accessory_points.json
   def index
@@ -84,4 +85,11 @@ class AccessoryPointsController < ApplicationController
       format.json { head :ok }
     end
   end
+
+private 
+	def authenticate
+		authenticate_or_request_with_http_basic do |username, password|
+			!(User.where("username = ? AND password = ?", username, password).empty?)
+		end
+	end
 end
