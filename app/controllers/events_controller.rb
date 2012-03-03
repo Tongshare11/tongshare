@@ -72,8 +72,7 @@ class EventsController < ApplicationController
 
     #varify the json object 
     if (!@event.content? or @event.content.nil? or 
-        !@event.title? or @event.title.nil? or
-        !@event.first? or @event.first.nil? or
+       	!@event.first? or @event.first.nil? or
         @event.latitude.nil? or @event.longitude.nil?)
        respond_to do |format|
         format.json{ render json: {errorCode: 1, errorDesc: "Invalid JSON object recieved"}, status: :uprocessable_entity }
