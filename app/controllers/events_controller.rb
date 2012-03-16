@@ -68,7 +68,7 @@ class EventsController < ApplicationController
   def create
 		  
     @event = Event.new(params[:event])
-		@event.user_id = @user.id
+    @event.user_id = @user.id
 
     #varify the json object 
     if (!@event.content? or @event.content.nil? or 
@@ -127,14 +127,20 @@ class EventsController < ApplicationController
 
 private 
 	def authenticate
-		authenticate_or_request_with_http_basic do |username, password|
-			users = User.where("username = ? AND password = ?", username, password);
-			if (users.empty?)
-				return false
-			else
-				@user = users[0];
-				return true;
-			end
+		user = authenticate_with_http_basic do |username, password|
+			users = User.where("username = ? AND password = ?", username, password)
+			users[0]
+		end
+		if (not user.nil?)
+			@user = user
+			puts user
+			return true
+		
+		else
+			puts "********need auth********"
+			request_http_basic_authentication
+			return false
+
 		end
 	end
 end

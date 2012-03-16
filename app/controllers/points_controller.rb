@@ -84,8 +84,21 @@ class PointsController < ApplicationController
 
 private 
 	def authenticate
-		authenticate_or_request_with_http_basic do |username, password|
-			!(User.where("username = ? AND password = ?", username, password).empty?)
+		user = authenticate_with_http_basic do |username, password|
+			users = User.where("username = ? AND password = ?", username, password)
+			users[0]
+		end
+		if (not user.nil?)
+			@user = user
+			puts user
+			return true
+		
+		else
+			puts "********need auth********"
+			request_http_basic_authentication
+			return false
+
 		end
 	end
+
 end
